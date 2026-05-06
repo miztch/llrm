@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	"github.com/alecthomas/kong"
 
@@ -11,7 +12,12 @@ import (
 	"github.com/miztch/llrm/internal/cleaner"
 )
 
-var version = "dev"
+var version = func() string {
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" {
+		return info.Main.Version
+	}
+	return "dev"
+}()
 
 var cli struct {
 	Region       string             `help:"AWS region (defaults to AWS_DEFAULT_REGION / config file)"`
